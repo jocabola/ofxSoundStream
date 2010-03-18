@@ -1,0 +1,63 @@
+/*
+ * OFX_SOUND_STREAM
+ */
+
+ofxSoundStream is an OpenFrameworks addon to handle ofSoundStream for multiple audio devices at the same time.
+
+It was initially developed by Arturo Castro (http://arturocastro.net/) and later I upgraded it to support RtAudio 4 and an enhanced audio event object that sends device information (ID and NAME) to the event listener.
+
+The addon is currently compatible with OF build 0061. Please, visit www.openframeworks.cc for more information about OF!
+
+
+CONTENTS:
+
+addons/ofxSoundStream --> the OpenFrameworks addon
+apps/addonsExamples/audioMultiInputExample --> an Example of application with its XCode project file (for Mac OS X). Windows and Linux Users can create a new project with the sources and don't forget to add the ofxSoundStream addon in your project.
+
+WHAT IT DOES (COMPARED TO BUILT-IN ofSoundStream):
+
+ofxSoundStream is encapsulated in a class so you can create multiple instances of it. You'd like to do this if you want to control multiple audio devices at the same time.
+
+ofxSoundStream is also an alternative to built-in ofSoundStream if you just wish to use a different audio device rather than the default one.
+
+It supports the default audioReceived handler, but you'd better use its own event listener if you wish to identify the device where the audio stream is coming from.
+
+The ofxAudioEventArgs contains two extra parameters (compared to ofAudioEventArgs):
+
+class ofxAudioEventArgs: public ofAudioEventArgs{
+public:
+	int 	deviceID;
+	string	deviceName;
+};
+
+EXAMPLE OF USE (BETTER LOOK AT THE INCLUDED SAMPLE!):
+
+ofxSoundStream c1;
+ofxSoundStream c2;
+
+c1.listDevices(); // list the devices in the console
+c1.setDeviceIdByName("M-Audio: FireWire 410 Multichannel");
+c1.setup(0, 2, this, 44100, 256, 4);
+ofAddListener(c1.audioReceivedEvent, this, &testApp::audioInputListener);
+	
+c2.setDeviceId(0);
+c2.setup(0, 2, this, 44100, 256, 4);
+ofAddListener(c2.audioReceivedEvent, this, &testApp::audioInputListener);
+
+EXAMPLE OF EVENT LISTENER:
+
+void testApp::audioInputListener(ofxAudioEventArgs &args){	
+	if(args.deviceID == 0){
+		for (int i = 0; i < args.bufferSize; i++){
+			left2[i] = args.buffer[i*2];
+			right2[i] = args.buffer[i*2+1];
+		}
+	}
+	else{
+		for (int i = 0; i < args.bufferSize; i++){
+			left[i] = args.buffer[i*2];
+			right[i] = args.buffer[i*2+1];
+		}
+	}
+	//cout << "Audio Input event received from device " << args.deviceID << " - " << args.deviceName << endl;
+}
