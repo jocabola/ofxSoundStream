@@ -4,7 +4,7 @@
 
 ofxSoundStream is an OpenFrameworks addon to handle ofSoundStream for multiple audio devices at the same time.
 
-It was initially developed by Arturo Castro (http://arturocastro.net/) and later I upgraded it to support RtAudio 4 and an enhanced audio event object that sends device information (ID and NAME) to the event listener.
+It was initially developed by Arturo Castro ( http://arturocastro.net/ ) and later I upgraded it to support RtAudio 4 and an enhanced audio event object that sends device information (ID and NAME) to the event listener.
 
 The addon is currently compatible with OF build 0061. Please, visit www.openframeworks.cc for more information about OF!
 
