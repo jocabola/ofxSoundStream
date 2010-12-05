@@ -83,6 +83,9 @@ void ofxSoundStream::setDeviceIdByName(string deviceName){
 	if(!found){
 		cout << "Device Name not found!" << endl;
 	}
+	
+	// free memory
+	delete audioTemp;
 }
 
 //---------------------------------------------------------
@@ -268,5 +271,9 @@ string ofxSoundStream::getDeviceName(){
  	int devices = audioTemp->getDeviceCount();
 	RtAudio::DeviceInfo info;
 	info = audioTemp->getDeviceInfo(deviceID);
+	
+	// free memory
+	delete audioTemp;
+	
 	return info.name;
 }
