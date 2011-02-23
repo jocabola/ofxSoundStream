@@ -32,6 +32,7 @@ ofxSoundStream::ofxSoundStream(){
 	nInputChannels	= 0;
 	nOutputChannels = 0;
 	deviceID		= 0;
+	deviceName		= "";
 }
 
 //------------------------------------------------------------------------------
@@ -49,11 +50,12 @@ void ofxSoundStream::setDeviceId(int _deviceID){
 	else{
 		cout << "Device ID set to : " << _deviceID << endl;
 	}
-	deviceID=_deviceID;
+	deviceID = _deviceID;
+	deviceName = getDeviceName();
 }
 
 //------------------------------------------------------------------------------
-void ofxSoundStream::setDeviceIdByName(string deviceName){
+void ofxSoundStream::setDeviceIdByName(string _deviceName){
 	RtAudio *audioTemp = 0;
 	bool found = false;
 	try {
@@ -66,14 +68,15 @@ void ofxSoundStream::setDeviceIdByName(string deviceName){
 	
 	for(int i=0;i<devices;i++){
 		info = audioTemp->getDeviceInfo(i);
-		if(info.name == deviceName){
+		if(info.name == _deviceName){
 			found = true;
-			if(audio && deviceID!=i){
+			if(audio && deviceID != i){
 				//ofLog(OF_ERROR,"cannot change device with stream already setup");
 				cout << "ERROR: cannot change device with stream already setup" << endl;
 			}
 			else{
 				deviceID = i;
+				deviceName = _deviceName;
 				cout << "Device ID set to : " << i << endl;
 			}
 			break;
@@ -237,7 +240,7 @@ int ofxSoundStream::receiveAudioBuffer(void *outputBuffer, void *inputBuffer, in
 		audioEventArgs.bufferSize = bufferSize;
 		audioEventArgs.nChannels = nInputChannels;
 		audioEventArgs.deviceID = deviceID;
-		audioEventArgs.deviceName = getDeviceName();
+		audioEventArgs.deviceName = deviceName;
 		ofNotifyEvent( audioReceivedEvent, audioEventArgs, this);
 #endif
 		memset(fPtrIn, 0, bufferSize * nInputChannels * sizeof(float));
@@ -251,7 +254,7 @@ int ofxSoundStream::receiveAudioBuffer(void *outputBuffer, void *inputBuffer, in
 		audioEventArgs.bufferSize = bufferSize;
 		audioEventArgs.nChannels = nOutputChannels;
 		audioEventArgs.deviceID = deviceID;
-		audioEventArgs.deviceName = getDeviceName();
+		audioEventArgs.deviceName = deviceName;
 		ofNotifyEvent( audioRequestedEvent, audioEventArgs, this);
 #endif
 	}

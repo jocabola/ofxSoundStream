@@ -43,6 +43,7 @@ protected:
 	int 				nOutputChannels;
 	ofxAudioEventArgs 	audioEventArgs;
 	int					deviceID;
+	string				deviceName;
 	
 	string getDeviceName();
 
